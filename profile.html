@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<script src="assets/js/profile.js"></script>
+
+<body class="container mt-5">
+  <h2>Welcome, <span id="username"></span></h2>
+  <p>Email: <span id="useremail"></span></p>
+  <a href="login.html" class="btn btn-secondary">Logout</a>
+
+  <script>
+    const sessionId = localStorage.getItem("session_id");
+    if (!sessionId) {
+      window.location.href = "login.html";
+    }
+
+    fetch("php/profile.php?session_id=" + sessionId)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          document.getElementById("username").innerText = data.data.name;
+          document.getElementById("useremail").innerText = data.data.email;
+        } else {
+          alert("Session expired. Login again.");
+          localStorage.removeItem("session_id");
+          window.location.href = "login.html";
+        }
+      });
+  </script>
+</body>
+</html>
